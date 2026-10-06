@@ -1,0 +1,34 @@
+mode,hypothesis,unit,asset,horizon,required,verdict,evidence,note
+dev,H1,BTC,BTC,,True,supported,GARCH ratio 1.218 (DM p <0.001); GJR ratio 1.239 (DM p <0.001),
+dev,H1,ETH,ETH,,True,not supported,GARCH ratio 1.137 (DM p 0.084); GJR ratio 1.147 (DM p 0.065),
+dev,H1,EURUSD,EURUSD,,True,supported,GARCH ratio 1.154 (DM p 0.009); GJR ratio 1.258 (DM p 0.018),
+dev,H1,SPX,SPX,,True,not supported,GARCH ratio 1.104 (DM p 0.043); GJR ratio 0.949 (DM p 0.381),
+dev,H1,overall,,,True,not supported,"at 1d, GARCH and GJR both have QLIKE ratio vs HAR > 1 with DM-HLN p < 0.05; all four assets",
+dev,H2,BTC 1d,BTC,1d,True,supported,HAR family in MCS: HARQ (4 members); LGBM 0.862 (p 0.145); MLP 0.904 (p 0.580),
+dev,H2,BTC 1w,BTC,1w,True,supported,HAR family in MCS: HARQ (6 members); LGBM 0.961 (p 0.733); MLP 0.988 (p 0.921),
+dev,H2,BTC 1m,BTC,1m,True,supported,"HAR family in MCS: HARQ, HAR-CJ (7 members); LGBM 0.850 (p 0.181); MLP 0.872 (p 0.265)",
+dev,H2,ETH 1d,ETH,1d,True,not supported,HAR family in MCS: none (3 members); LGBM 0.843 (p 0.103); MLP 0.931 (p 0.738),
+dev,H2,ETH 1w,ETH,1w,True,not supported,HAR family in MCS: none (4 members); LGBM 0.859 (p 0.092); MLP 0.940 (p 0.765),
+dev,H2,ETH 1m,ETH,1m,True,supported,"HAR family in MCS: HARQ, HAR-CJ (9 members); LGBM 0.827 (p 0.242); MLP 0.761 (p 0.057)",
+dev,H2,EURUSD 1d,EURUSD,1d,True,supported,HAR family in MCS: HAR-CJ (3 members); LGBM 1.019 (p 0.484); MLP 0.977 (p 0.365),
+dev,H2,EURUSD 1w,EURUSD,1w,True,supported,"HAR family in MCS: HAR, HARQ, HAR-CJ, SHAR (8 members); LGBM 0.997 (p 0.945); MLP 0.933 (p 0.047)",
+dev,H2,EURUSD 1m,EURUSD,1m,True,not supported,HAR family in MCS: none (6 members); LGBM 0.967 (p 0.723); MLP 0.966 (p 0.624),
+dev,H2,SPX 1d,SPX,1d,True,not supported,HAR family in MCS: none (2 members); LGBM 0.920 (p 0.035); MLP 0.841 (p 0.005),
+dev,H2,SPX 1w,SPX,1w,True,not supported,HAR family in MCS: none (3 members); LGBM 0.932 (p 0.199); MLP 0.767 (p 0.004),
+dev,H2,SPX 1m,SPX,1m,True,not supported,HAR family in MCS: none (6 members); LGBM 0.926 (p 0.532); MLP 0.920 (p 0.266),
+dev,H2,overall,,,True,not supported,"every asset × horizon cell: the 90% MCS contains HAR, HARQ, HAR-CJ or SHAR; all 12 cells",
+dev,H3,BTC,BTC,,True,not supported,COMBO c −0.006 (p 0.975); HAR c +0.038 (p 0.840),
+dev,H3,ETH,ETH,,True,not supported,COMBO c −0.025 (p 0.905); HAR c −0.125 (p 0.406),
+dev,H3,EURUSD,EURUSD,,False,not supported,COMBO c +0.144 (p 0.149); HAR c −0.007 (p 0.943),"outside the H3 rule (SPX, BTC, ETH); shown for information"
+dev,H3,SPX,SPX,,True,supported,COMBO c +0.347 (p 0.003); HAR c +0.098 (p 0.477),
+dev,H3,overall,,,True,not supported,"at 1m, encompassing coefficient c of COMBO > 0 with p < 0.05; SPX, BTC and ETH",
+dev,H4,BTC,BTC,,True,supported,FZ0 diff −0.093 (DM p 0.038); green share 100.0% vs HS-250 92.5%,
+dev,H4,ETH,ETH,,True,supported,FZ0 diff −0.125 (DM p 0.026); green share 88.7% vs HS-250 41.9%,
+dev,H4,EURUSD,EURUSD,,True,not supported,FZ0 diff +0.004 (DM p 0.911); green share 67.6% vs HS-250 60.4%,
+dev,H4,SPX,SPX,,True,supported,FZ0 diff −0.250 (DM p 0.004); green share 92.0% vs HS-250 44.0%,
+dev,H4,overall,,,True,not supported,COMBO+FHS fz0_diff vs HS-250 < 0 and rolling-250 green share > HS-250's; all four assets,
+dev,H5,BTC,BTC,,True,not supported,"J/RV 4.0%, jump days 14.8%, RS⁻/RV 49.8%, 1d QLIKE gain vs HAR: HAR-CJ −3.8%, SHAR −4.8%","2/5 larger than EURUSD (not larger: rsneg_rv, gain_HAR-CJ, gain_SHAR)"
+dev,H5,ETH,ETH,,True,not supported,"J/RV 4.6%, jump days 17.7%, RS⁻/RV 50.0%, 1d QLIKE gain vs HAR: HAR-CJ −6.8%, SHAR −6.2%","2/5 larger than EURUSD (not larger: rsneg_rv, gain_HAR-CJ, gain_SHAR)"
+dev,H5,EURUSD,EURUSD,,False,n/a,"J/RV 3.5%, jump days 11.3%, RS⁻/RV 50.4%, 1d QLIKE gain vs HAR: HAR-CJ +2.1%, SHAR −1.1%",reference asset
+dev,H5,SPX,SPX,,False,n/a,"J/RV 1.5%, jump days 4.2%, RS⁻/RV 49.9%, 1d QLIKE gain vs HAR: HAR-CJ −26.8%, SHAR −4.2%",not part of the H5 comparison
+dev,H5,overall,,,True,not supported,"J/RV, jump-day share, RS⁻/RV and 1d QLIKE gains of HAR-CJ and SHAR vs HAR larger for BTC and ETH than for EURUSD",descriptive

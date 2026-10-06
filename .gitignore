@@ -1,0 +1,51 @@
+# ---------------------------------------------------------------- local data (1.5 GB, re-downloadable)
+/data/
+
+# ---------------------------------------------------------------- Python environment, builds and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------- temporary, partial and log files
+*.part
+*.tmp
+*.bak
+*.log
+*.swp
+*~
+
+# ---------------------------------------------------------------- secrets and local settings (never commit)
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials*
+
+# ---------------------------------------------------------------- editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---------------------------------------------------------------- AI assistant files (anything named "claude")
+.claude/
+*claude*
+*Claude*
+*CLAUDE*
+
+# ---------------------------------------------------------------- Markdown: only the root README.md is committed
+*.md
+!/README.md

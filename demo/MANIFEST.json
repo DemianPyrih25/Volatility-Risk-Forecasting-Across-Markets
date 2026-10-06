@@ -1,0 +1,202 @@
+{
+  "created_utc": "2026-10-06T17:29:37+00:00",
+  "purpose": "snapshot of the real pipeline outputs so the dashboard runs on a fresh clone; no raw data",
+  "last_live_session": "2026-10-01",
+  "files": [
+    {
+      "file": "demo/results/eval_dm_har.parquet",
+      "source": "data/results/eval_dm_har.parquet",
+      "sha256": "847cde1a5dffe6261ad9a4472a608654ab0a2eae4a5fc8e87b9694225b2f96c8"
+    },
+    {
+      "file": "demo/results/eval_encompassing.parquet",
+      "source": "data/results/eval_encompassing.parquet",
+      "sha256": "d38ed92d216f8a9c09c6cf75e2a9c5f5bfedab9276db52e2a04d19d5540b118d"
+    },
+    {
+      "file": "demo/results/eval_iv_dm.parquet",
+      "source": "data/results/eval_iv_dm.parquet",
+      "sha256": "825e2d84cd7b070556248b507e14f42a55a586705157ee8d4af678cd9b6273a9"
+    },
+    {
+      "file": "demo/results/eval_iv_leaderboard.parquet",
+      "source": "data/results/eval_iv_leaderboard.parquet",
+      "sha256": "305e8075f93992d793b2fc6bf23914afdb7dad5ea62797900699d2c9ace1684b"
+    },
+    {
+      "file": "demo/results/eval_iv_mcs.parquet",
+      "source": "data/results/eval_iv_mcs.parquet",
+      "sha256": "79291bed613ea6719a1d10723cffe4d1b68aad24a21e22ef43064ecd39e0ce63"
+    },
+    {
+      "file": "demo/results/eval_leaderboard.parquet",
+      "source": "data/results/eval_leaderboard.parquet",
+      "sha256": "79763a129a22eb867e64969f5327934f57da4b1dbf45f9f26ff9582b9c45fb64"
+    },
+    {
+      "file": "demo/results/eval_leaderboard_pre2021.parquet",
+      "source": "data/results/eval_leaderboard_pre2021.parquet",
+      "sha256": "4f5d0ce343cd809578464ba4198f52da6986ae346b48f22117a9cc8603f64adf"
+    },
+    {
+      "file": "demo/results/eval_mcs.parquet",
+      "source": "data/results/eval_mcs.parquet",
+      "sha256": "2a020becdc683d9bef61b7489bd9ac6169b29f57d1c41f8c183c7e6cc5590c4a"
+    },
+    {
+      "file": "demo/results/eval_mz.parquet",
+      "source": "data/results/eval_mz.parquet",
+      "sha256": "89fd8e4c4103cbaf967fc78e742cae9b69034e90039592f308ed1a7adca7b9df"
+    },
+    {
+      "file": "demo/results/forecasts.parquet",
+      "source": "data/results/forecasts.parquet",
+      "sha256": "95a51eeb85e6528b714b6c0970daaa815d0c54d5be950e7d39bc9dd0c27e716a"
+    },
+    {
+      "file": "demo/results/har_star.json",
+      "source": "data/results/har_star.json",
+      "sha256": "737ec5b1a4071cf957c6aee34175d1b23fa1198c6b01fd518129c6203c3aec21"
+    },
+    {
+      "file": "demo/results/risk.parquet",
+      "source": "data/results/risk.parquet",
+      "sha256": "13d40abd2558e6b59d85329608c7b183ddbcae3a9dfc0bfa81929129d1fc20b7"
+    },
+    {
+      "file": "demo/results/risk_backtests.parquet",
+      "source": "data/results/risk_backtests.parquet",
+      "sha256": "d6fcabfa4aa1813353eaf0f0067572ffaed9855277955f8db5ed9be51a6b9551"
+    },
+    {
+      "file": "demo/results/risk_es.parquet",
+      "source": "data/results/risk_es.parquet",
+      "sha256": "47b19a58b959c7a0e6a8e14d8340aa4385832e13739723b5d0112950a45f44d1"
+    },
+    {
+      "file": "demo/results/risk_fz0.parquet",
+      "source": "data/results/risk_fz0.parquet",
+      "sha256": "8542315b09ec1703c4a72c35fc54e590ac95752e2a2e51cf3c053fe01d2296c3"
+    },
+    {
+      "file": "demo/results/risk_risk_leaderboard.parquet",
+      "source": "data/results/risk_risk_leaderboard.parquet",
+      "sha256": "cde746c7ec195125ff1ebf1eaf8d50eb305a1d00008857a7d6ae26bdf5f04912"
+    },
+    {
+      "file": "demo/results/risk_rolling_zones.parquet",
+      "source": "data/results/risk_rolling_zones.parquet",
+      "sha256": "1eb0a7a469187b29029e967c646ebfbc492b237d1b64f775cc7cbfe035bc0431"
+    },
+    {
+      "file": "demo/results/risk_time_in_zone.parquet",
+      "source": "data/results/risk_time_in_zone.parquet",
+      "sha256": "3f50e4929bb9e49925d9e411280c10a06b3517c6ef2bed3040c92c3d420794c8"
+    },
+    {
+      "file": "demo/results/targets.parquet",
+      "source": "data/results/targets.parquet",
+      "sha256": "2d1160df4dc464e70410ce86d07611e498f5c80fe9a255c9b96bc2680ef33e7b"
+    },
+    {
+      "file": "demo/results/holdout/eval_dm_har.parquet",
+      "source": "data/results/holdout/eval_dm_har.parquet",
+      "sha256": "b6af207347b4ffce6eaa8d6a870286b311a33262bd684c0a2043f310d244d5e1"
+    },
+    {
+      "file": "demo/results/holdout/eval_encompassing.parquet",
+      "source": "data/results/holdout/eval_encompassing.parquet",
+      "sha256": "1f8d7de704e12a279147e6b6f56aad411e9318af8a5b8e16ca5bb6e076cbc35b"
+    },
+    {
+      "file": "demo/results/holdout/eval_iv_dm.parquet",
+      "source": "data/results/holdout/eval_iv_dm.parquet",
+      "sha256": "06123e62a6550025f11bb76ad17601e93745cd95bc2e24c48888fbb1949b37e6"
+    },
+    {
+      "file": "demo/results/holdout/eval_iv_leaderboard.parquet",
+      "source": "data/results/holdout/eval_iv_leaderboard.parquet",
+      "sha256": "68a4b8ccb4aa75a574bf2436d436caa09d261b6ccd51129763684f4586a10a89"
+    },
+    {
+      "file": "demo/results/holdout/eval_leaderboard.parquet",
+      "source": "data/results/holdout/eval_leaderboard.parquet",
+      "sha256": "4079d9498e428d862cdf387117198ff5d3481d06fa00905ae4fdf65fef8d0176"
+    },
+    {
+      "file": "demo/results/holdout/eval_mcs.parquet",
+      "source": "data/results/holdout/eval_mcs.parquet",
+      "sha256": "4119bac540f05950095ba520931a15ca0978c22258d36eddf477bc06f1f1dd0b"
+    },
+    {
+      "file": "demo/results/holdout/eval_mz.parquet",
+      "source": "data/results/holdout/eval_mz.parquet",
+      "sha256": "e13f7d0ca87d0d7b1a21b4d9f9ab74c4abf6cb1ebe0cc375a69d83280fb3b9f6"
+    },
+    {
+      "file": "demo/results/holdout/eval_ratio_ci.parquet",
+      "source": "data/results/holdout/eval_ratio_ci.parquet",
+      "sha256": "3bd3bdd7f5d6af0b466e0882518922717ba06d3aa371011c3e04466c2173a063"
+    },
+    {
+      "file": "demo/results/holdout/forecasts.parquet",
+      "source": "data/results/holdout/forecasts.parquet",
+      "sha256": "dae45053490ca7e47f4e401f95ea34b3e47b285d6168b62e75fa82ba4686cc3b"
+    },
+    {
+      "file": "demo/results/holdout/h5_measures.parquet",
+      "source": "data/results/holdout/h5_measures.parquet",
+      "sha256": "77d83474236ffc19270d1cf6d12decb7c774cc67493677f763f894f66068c342"
+    },
+    {
+      "file": "demo/results/holdout/risk.parquet",
+      "source": "data/results/holdout/risk.parquet",
+      "sha256": "85d51f8a2e62e5dc947318773c912acbf31b7bbadd714e8deebb073fb10790cd"
+    },
+    {
+      "file": "demo/results/holdout/risk_backtests.parquet",
+      "source": "data/results/holdout/risk_backtests.parquet",
+      "sha256": "b0c83c3c3c07ae6a6c95207ddbce5b13d18829b46b650e29ed969af7b847638d"
+    },
+    {
+      "file": "demo/results/holdout/risk_es.parquet",
+      "source": "data/results/holdout/risk_es.parquet",
+      "sha256": "0b4036f5ed2655ade3ff51a3c73c5bdb184209e7e5cbfbefbbc031e8ca0ce442"
+    },
+    {
+      "file": "demo/results/holdout/risk_fz0.parquet",
+      "source": "data/results/holdout/risk_fz0.parquet",
+      "sha256": "a6f19dfc6a200730b5aaa28940ea0f928984c17b4895465940d0675d81d3eb5a"
+    },
+    {
+      "file": "demo/results/holdout/risk_risk_leaderboard.parquet",
+      "source": "data/results/holdout/risk_risk_leaderboard.parquet",
+      "sha256": "0d3e535ea824e9d2098e62e5a079335ab2f7cc93db7aa96cdbe8eee91c9e174e"
+    },
+    {
+      "file": "demo/results/holdout/risk_rolling_zones.parquet",
+      "source": "data/results/holdout/risk_rolling_zones.parquet",
+      "sha256": "9189f4715c1f01715e1bcbb46cfdde48af9cf6426ac6e0f9348f7ccc7b7fc702"
+    },
+    {
+      "file": "demo/results/holdout/risk_time_in_zone.parquet",
+      "source": "data/results/holdout/risk_time_in_zone.parquet",
+      "sha256": "ae80989b653acafe7826fe400672569caa0dc8896bc452fe3594aab1e24b92ff"
+    },
+    {
+      "file": "demo/results/holdout/targets.parquet",
+      "source": "data/results/holdout/targets.parquet",
+      "sha256": "138afa47ec223ee82e08f8443bc9c58de8e7d0e28a89a743b0252da1f2c52abb"
+    },
+    {
+      "file": "demo/live/holdout/daily.parquet",
+      "source": "data/live/holdout/daily.parquet (columns asset, session_date, tv)",
+      "sha256": "fd4389d566afc42d6fb8ffdec79179b034070932c4cd9561481d28129a484cdb"
+    },
+    {
+      "file": "demo/live/forecasts/forecasts.parquet",
+      "source": "data/live/forecasts/forecasts.parquet (horizon 1d, models COMBO, HAR, GJR, origins from 2025-09-01)",
+      "sha256": "aa0ad15ddd960b4a564ccbc92ac9169eef99e4628d90ff8d38fb70ef88b21bb1"
+    }
+  ]
+}

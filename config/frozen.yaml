@@ -1,0 +1,354 @@
+forecast_models:
+- RW
+- EWMA
+- GARCH
+- GJR
+- HAR
+- HAR-CJ
+- SHAR
+- HARQ
+- LGBM
+- MLP
+combo_members:
+- GJR
+- HARQ
+- LGBM
+risk_models:
+- HS-250
+- RiskMetrics
+- GJR+FHS
+- HAR*+FHS
+- COMBO+FHS
+- COMBO+Normal
+primary_risk_model: COMBO+FHS
+reference_forecast_model: HAR
+har_star:
+  BTC: HARQ
+  ETH: HARQ
+  EURUSD: HAR-CJ
+  SPX: HAR
+features:
+  BTC:
+    RW:
+    - tv
+    EWMA:
+    - r_cc
+    GARCH:
+    - r_cc
+    GJR:
+    - r_cc
+    HAR:
+    - rv_d
+    - rv_w
+    - rv_m
+    HAR-CJ:
+    - c_d
+    - c_w
+    - c_m
+    - j_d
+    - j_w
+    - j_m
+    SHAR:
+    - rs_pos
+    - rs_neg
+    - rv_w
+    - rv_m
+    HARQ:
+    - rv_d
+    - rq_rv
+    - rv_w
+    - rv_m
+    LGBM:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow
+    MLP:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow_0
+    - dow_1
+    - dow_2
+    - dow_3
+    - dow_4
+    - dow_5
+    - dow_6
+  ETH:
+    RW:
+    - tv
+    EWMA:
+    - r_cc
+    GARCH:
+    - r_cc
+    GJR:
+    - r_cc
+    HAR:
+    - rv_d
+    - rv_w
+    - rv_m
+    HAR-CJ:
+    - c_d
+    - c_w
+    - c_m
+    - j_d
+    - j_w
+    - j_m
+    SHAR:
+    - rs_pos
+    - rs_neg
+    - rv_w
+    - rv_m
+    HARQ:
+    - rv_d
+    - rq_rv
+    - rv_w
+    - rv_m
+    LGBM:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow
+    MLP:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow_0
+    - dow_1
+    - dow_2
+    - dow_3
+    - dow_4
+    - dow_5
+    - dow_6
+  EURUSD:
+    RW:
+    - tv
+    EWMA:
+    - r_cc
+    GARCH:
+    - r_cc
+    GJR:
+    - r_cc
+    HAR:
+    - rv_d
+    - rv_w
+    - rv_m
+    - gap2
+    HAR-CJ:
+    - c_d
+    - c_w
+    - c_m
+    - j_d
+    - j_w
+    - j_m
+    - gap2
+    SHAR:
+    - rs_pos
+    - rs_neg
+    - rv_w
+    - rv_m
+    - gap2
+    HARQ:
+    - rv_d
+    - rq_rv
+    - rv_w
+    - rv_m
+    - gap2
+    LGBM:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow
+    - gap2
+    MLP:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - gap2
+    - dow_0
+    - dow_1
+    - dow_2
+    - dow_3
+    - dow_4
+    - dow_5
+    - dow_6
+  SPX:
+    RW:
+    - tv
+    EWMA:
+    - r_cc
+    GARCH:
+    - r_cc
+    GJR:
+    - r_cc
+    HAR:
+    - rv_d
+    - rv_w
+    - rv_m
+    - gap2
+    HAR-CJ:
+    - c_d
+    - c_w
+    - c_m
+    - j_d
+    - j_w
+    - j_m
+    - gap2
+    SHAR:
+    - rs_pos
+    - rs_neg
+    - rv_w
+    - rv_m
+    - gap2
+    HARQ:
+    - rv_d
+    - rq_rv
+    - rv_w
+    - rv_m
+    - gap2
+    LGBM:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - dow
+    - gap2
+    MLP:
+    - rv
+    - rv_w
+    - rv_m
+    - bv
+    - j_share
+    - rs_pos
+    - rs_neg
+    - rq
+    - r_cc
+    - r_cc_neg
+    - gap2
+    - dow_0
+    - dow_1
+    - dow_2
+    - dow_3
+    - dow_4
+    - dow_5
+    - dow_6
+hyperparameters:
+  lgbm:
+    objective: gamma
+    n_estimators: 300
+    learning_rate: 0.03
+    num_leaves: 15
+    min_child_samples: 50
+    colsample_bytree: 0.8
+    reg_lambda: 1.0
+    n_jobs: 4
+  mlp:
+    hidden:
+    - 32
+    - 32
+    epochs: 400
+    lr: 0.001
+    weight_decay: 0.0001
+    n_seeds: 5
+walk_forward:
+  window: 1000
+  refit:
+    garch:
+      crypto: 30
+      fx: 21
+      xnys: 21
+    ml:
+      crypto: 90
+      fx: 63
+      xnys: 63
+har_lags:
+  crypto:
+  - 1
+  - 7
+  - 30
+  fx:
+  - 1
+  - 5
+  - 22
+  xnys:
+  - 1
+  - 5
+  - 22
+jump_alpha: 0.999
+min_coverage: 0.8
+risk:
+  alphas:
+  - 0.01
+  - 0.025
+  fhs_pool: 1000
+  fhs_min: 500
+  hs_window: 250
+  ewma_lambda: 0.94
+  mc_reps: 10000
+  traffic_window: 250
+evaluation:
+  mcs_size: 0.1
+  mcs_reps: 5000
+  boot_reps: 5000
+  iv_cal_min: 250
+  iv_cal_max: 1000
+seed: 20261002
+dates:
+  data_end: '2026-09-30'
+  holdout_start: '2025-10-01'
+  dev_eval_start: '2021-01-01'
+  evz_last: '2023-12-31'
+hypotheses:
+- H1
+- H2
+- H3
+- H4
+- H5

@@ -1,0 +1,94 @@
+# Project configuration — see docs/SPEC.md for the meaning of every field.
+seed: 20261002
+
+dates:
+  data_end: 2026-09-30          # last session included
+  holdout_start: 2025-10-01     # first holdout session (sealed)
+  dev_eval_start: 2021-01-01    # first origin of the headline dev evaluation window
+  evz_last: 2023-12-31          # EVZ used only up to this date (stale afterwards; discontinued 2025-03-11)
+
+assets:
+  BTC:
+    source: binance
+    symbol: BTCUSDT
+    clock: crypto
+    start: 2018-01-01
+    iv: DVOL
+  ETH:
+    source: binance
+    symbol: ETHUSDT
+    clock: crypto
+    start: 2018-01-01
+    iv: DVOL
+  EURUSD:
+    source: dukascopy
+    symbol: EURUSD
+    price_scale: 100000
+    clock: fx
+    start: 2012-01-01
+    iv: EVZ
+  SPX:
+    source: dukascopy
+    symbol: USA500IDXUSD
+    price_scale: 1000
+    clock: xnys
+    start: 2012-01-01          # download start; modelling start is probed (SPEC §1)
+    iv: VIX
+
+sessions:
+  bar_minutes: 5
+  min_coverage: 0.80
+
+horizons:
+  # calendar-day windows (t, t+days]; n_max caps per clock
+  1d: {days: 0, n_max: {crypto: 1, fx: 1, xnys: 1}}
+  1w: {days: 7, n_max: {crypto: 7, fx: 5, xnys: 5}}
+  1m: {days: 30, n_max: {crypto: 30, fx: 22, xnys: 22}}
+
+har_lags:
+  crypto: [1, 7, 30]
+  fx: [1, 5, 22]
+  xnys: [1, 5, 22]
+
+walk_forward:
+  window: 1000
+  refit:
+    garch: {crypto: 30, fx: 21, xnys: 21}    # in sessions
+    ml: {crypto: 90, fx: 63, xnys: 63}
+
+jumps:
+  alpha: 0.999
+
+models:
+  combo_members: [GJR, HARQ, LGBM]
+  lgbm:
+    objective: gamma
+    n_estimators: 300
+    learning_rate: 0.03
+    num_leaves: 15
+    min_child_samples: 50
+    colsample_bytree: 0.8
+    reg_lambda: 1.0
+    n_jobs: 4
+  mlp:
+    hidden: [32, 32]
+    epochs: 400
+    lr: 0.001
+    weight_decay: 0.0001
+    n_seeds: 5
+
+evaluation:
+  mcs_size: 0.10
+  mcs_reps: 5000
+  boot_reps: 5000
+  iv_cal_min: 250
+  iv_cal_max: 1000
+
+risk:
+  alphas: [0.01, 0.025]
+  fhs_pool: 1000
+  fhs_min: 500
+  hs_window: 250
+  ewma_lambda: 0.94
+  mc_reps: 10000
+  traffic_window: 250

@@ -1,0 +1,3128 @@
+{
+  "schema": "volrisk-verify/1",
+  "generated_utc": "2026-10-06T18:10:31Z",
+  "args": {
+    "full": false,
+    "sample": 30,
+    "seed": 2791091353,
+    "seed_source": {
+      "source": "newest Bitcoin block hash (last 32 bits)",
+      "block_hash": "00000000000000000000b06e6303e3cba1c2e27f58a7b0398e453a25a65cac99",
+      "url": "https://blockstream.info/api/blocks/tip/hash",
+      "drawn_utc": "2026-10-06T18:10:31Z"
+    },
+    "network": true,
+    "workers": 10
+  },
+  "overall": "FAIL",
+  "counts": {
+    "PASS": 20,
+    "FAIL": 1,
+    "SKIPPED": 3
+  },
+  "rules": [
+    "1 - `verify_seal()` lists no changed artefact, and the code hash now = SEALED.json = the hash logged at the holdout opening.",
+    "2 - exactly one opening in holdout_log.jsonl (`n_previous` 0, no re-run reason), made after the seal, with the same hashes as SEALED.json, and SEALED.json unchanged since the opening.",
+    "3 - every Binance zip matches the CHECKSUM file Binance serves for it now (downloaded again) and its local copy; at least `sample` raw files drawn with a fresh seed (the newest Bitcoin block hash, printed; `--seed` repeats a draw) are re-downloaded byte-identical; every raw file still has the SHA-256 recorded at its download and no raw file is unrecorded (any difference = FAIL; checks the network could not complete = SKIPPED).",
+    "4 - at least 250 matched days and a correlation of daily log returns >= 0.99 (BTC, ETH vs Coinbase), >= 0.99 (S&P 500 vs FRED), >= 0.9 (EUR/USD at the ECB fixing time vs the ECB reference rate).",
+    "5 - compared files are equal: tables exactly (NaN = NaN), forecasts to rtol 1e-09, atol 0; the holdout result files (written at the opening, not in SEALED.json) still have the SHA-256 the first ledger payload recorded; with --full the re-run walk-forwards match every stored row in both directions and the gold tables rebuilt from the raw files equal the sealed ones.",
+    "6 - for every frozen forecast model and COMBO, no forecast at an origin <= t0 changes when the data after t0 is perturbed (and forecasts after t0 do change), for t0 = the fixed cut-off and each periodically refitted model's last refit origin before it; all three cheating models are flagged (the training-label cheat at its refit origin); the noise model has the worst mean QLIKE and MCS p-value < 0.10.",
+    "7 - every compared hyperparameter in config/frozen.yaml and config/config.yaml equals docs/SPEC.md, and the frozen LightGBM keeps the pre-registered number of leaves.",
+    "8 - the hash chain recomputes and no payload, entry file, proof or score exists outside it (UTC days without a run are listed); every entry is pinned in Bitcoin within 24 h of its run; every payload has an .ots proof of its exact bytes, every Bitcoin attestation verifies and its block time + 2 h precedes the close of the payload's first target session; every recorded forecast equals the frozen walk-forward at its origin and has the ex-ante window of the session calendar."
+  ],
+  "seconds": 438.4,
+  "checks": [
+    {
+      "id": "1",
+      "title": "Frozen code unchanged",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute the SHA-256 of every frozen code, config, data and result file and compare with SEALED.json and with the code hash written into holdout_log.jsonl when the holdout was opened.",
+      "evidence": {
+        "summary": "46 files under src/volrisk/, changed artefacts: none",
+        "verify_seal": [],
+        "n_code_files": 46,
+        "code_sha256_now": "4ab7783a00b3fa35542108b59b5a3cd9ab058e919a005e1aada84bcdf8ddb8ed",
+        "code_sha256_sealed": "4ab7783a00b3fa35542108b59b5a3cd9ab058e919a005e1aada84bcdf8ddb8ed",
+        "code_sha256_logged_at_opening": "4ab7783a00b3fa35542108b59b5a3cd9ab058e919a005e1aada84bcdf8ddb8ed",
+        "sealed_utc": "2026-10-02T15:13:33+00:00",
+        "changed_code_files": []
+      },
+      "seconds": 0.1
+    },
+    {
+      "id": "2",
+      "title": "Holdout opened exactly once",
+      "status": "PASS",
+      "reason": null,
+      "method": "Read holdout_log.jsonl and check it holds a single opening, made after the seal, that recorded exactly the sealed hashes, and that SEALED.json has not changed since.",
+      "evidence": {
+        "n_openings": 1,
+        "sealed_utc": "2026-10-02T15:13:33+00:00",
+        "opened_utc": "2026-10-02T15:20:42+00:00",
+        "n_previous": 0,
+        "rerun_reason": null,
+        "opened_after_seal": true,
+        "hashes_match_seal": true,
+        "seal_file_unchanged_since_opening": true,
+        "hashes": [
+          {
+            "artefact": "code",
+            "sealed": "4ab7783a00b3fa35542108b59b5a3cd9ab058e919a005e1aada84bcdf8ddb8ed",
+            "logged_at_opening": "4ab7783a00b3fa35542108b59b5a3cd9ab058e919a005e1aada84bcdf8ddb8ed",
+            "equal": true
+          },
+          {
+            "artefact": "config",
+            "sealed": "a255c787e75d6f77e488b0647ce0eae76ca2937ae6f4d7d98e61ccb71043a842",
+            "logged_at_opening": "a255c787e75d6f77e488b0647ce0eae76ca2937ae6f4d7d98e61ccb71043a842",
+            "equal": true
+          },
+          {
+            "artefact": "frozen",
+            "sealed": "2637706d07003739d7a4511209b096f42fe91c6f55b3e6462405366a53a22fac",
+            "logged_at_opening": "2637706d07003739d7a4511209b096f42fe91c6f55b3e6462405366a53a22fac",
+            "equal": true
+          },
+          {
+            "artefact": "holdout_data",
+            "sealed": "8fde77b45c9a76ba86196ef6f184c48040cc7ffb3783af733fc8ffe61d679d12",
+            "logged_at_opening": "8fde77b45c9a76ba86196ef6f184c48040cc7ffb3783af733fc8ffe61d679d12",
+            "equal": true
+          },
+          {
+            "artefact": "dev_data",
+            "sealed": "41d9cf44a05debf87cbab7ad06bc9a8b8297b20b73cdf023837973d80afafb38",
+            "logged_at_opening": "41d9cf44a05debf87cbab7ad06bc9a8b8297b20b73cdf023837973d80afafb38",
+            "equal": true
+          },
+          {
+            "artefact": "implied",
+            "sealed": "0f5b7baf17e4b77333b5fcb0c8bd47643a05e82dbded1c4bea5a52f805bd809b",
+            "logged_at_opening": "0f5b7baf17e4b77333b5fcb0c8bd47643a05e82dbded1c4bea5a52f805bd809b",
+            "equal": true
+          },
+          {
+            "artefact": "dev_forecasts",
+            "sealed": "95a51eeb85e6528b714b6c0970daaa815d0c54d5be950e7d39bc9dd0c27e716a",
+            "logged_at_opening": "95a51eeb85e6528b714b6c0970daaa815d0c54d5be950e7d39bc9dd0c27e716a",
+            "equal": true
+          },
+          {
+            "artefact": "dev_risk",
+            "sealed": "13d40abd2558e6b59d85329608c7b183ddbcae3a9dfc0bfa81929129d1fc20b7",
+            "logged_at_opening": "13d40abd2558e6b59d85329608c7b183ddbcae3a9dfc0bfa81929129d1fc20b7",
+            "equal": true
+          }
+        ],
+        "earliest_holdout_result_file_utc": "2026-10-02T15:28:37Z",
+        "summary": "1 opening at 2026-10-02T15:20:42+00:00, seal created 2026-10-02T15:13:33+00:00"
+      },
+      "seconds": 0.0
+    },
+    {
+      "id": "3a",
+      "title": "Binance zips match Binance CHECKSUM files",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute the SHA-256 of every downloaded Binance zip and compare it with the checksum file Binance serves for it now (downloaded again) and with the local copy of that file.",
+      "evidence": {
+        "summary": "270 of 270 zips match the CHECKSUM Binance serves now, 270 match their local copy",
+        "n_zips": 270,
+        "n_monthly": 208,
+        "n_daily": 62,
+        "megabytes": 438.8,
+        "n_checksums_downloaded": 270,
+        "n_match_binance": 270,
+        "n_mismatch_binance": 0,
+        "n_match_local_copy": 270,
+        "n_mismatch_local_copy": 0,
+        "n_without_local_checksum": 0,
+        "n_local_copy_differs_from_binance": 0,
+        "n_download_errors": 0,
+        "mismatch_binance": [],
+        "mismatch_local_copy": [],
+        "without_local_checksum": [],
+        "local_copy_differs_from_binance": [],
+        "errors": []
+      },
+      "seconds": 42.0
+    },
+    {
+      "id": "3b",
+      "title": "Random raw files re-downloaded byte-identical",
+      "status": "PASS",
+      "reason": null,
+      "method": "Draw 30 raw files at random (seed 2791091353, printed below; half Binance, half Dukascopy), download them again from the original public URLs and check the bytes are identical (same SHA-256) to the local copies.",
+      "evidence": {
+        "summary": "30 of 30 re-downloaded files identical (seed 2791091353, 3 download errors)",
+        "seed": 2791091353,
+        "seed_source": {
+          "source": "newest Bitcoin block hash (last 32 bits)",
+          "block_hash": "00000000000000000000b06e6303e3cba1c2e27f58a7b0398e453a25a65cac99",
+          "url": "https://blockstream.info/api/blocks/tip/hash",
+          "drawn_utc": "2026-10-06T18:10:31Z"
+        },
+        "requested": 30,
+        "population": {
+          "binance": 270,
+          "dukascopy": 18476
+        },
+        "n_compared": 30,
+        "n_identical": 30,
+        "n_different": 0,
+        "n_download_errors": 3,
+        "by_source": {
+          "binance": 15,
+          "dukascopy": 15
+        },
+        "files": [
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2020-12.zip",
+            "bytes": 2304125,
+            "sha256": "a53a9352fd808d10981f68191138b39ef142e15ca88e03a061309f1699419749",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2020-03.zip",
+            "bytes": 2277959,
+            "sha256": "ee5d21ec0f3c5bdef1da330d8b74d8571779fe757bb7e9f272847d36b95a71a2",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2023-10.zip",
+            "bytes": 2099200,
+            "sha256": "9e854972545806398d124571916348238ce39961072730c200cca3c2e0bd50a3",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2024-01.zip",
+            "bytes": 2169570,
+            "sha256": "40b78258091a468f8756843f207f5913eafc1d6e756c40a78711320d93fa5e75",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2026-09-04.zip",
+            "bytes": 70253,
+            "sha256": "81064e4b9e326105763003b522214c8ce884a5203428f7b1e0e2bb6893988839",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1m/ETHUSDT-1m-2019-09.zip",
+            "bytes": 1910267,
+            "sha256": "ed943b86487a8a94eda85b2f526ede929dbbd1f41aefe7b8311552aa47827976",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1m/ETHUSDT-1m-2019-06.zip",
+            "bytes": 1956764,
+            "sha256": "fe214b966bf8ca7472eeb8a52120a995c6df9119788b0801a1ec10f84ec1b517",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2026-09-10.zip",
+            "bytes": 69441,
+            "sha256": "c03d63c5cd204e9627d20a3ce13a63fc708468f37f28f3455cfefed8680051a4",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/daily/klines/ETHUSDT/1m/ETHUSDT-1m-2026-09-24.zip",
+            "bytes": 67431,
+            "sha256": "a064169c707c2988b042efa633bdbe98660008227661af8043e5fc6e807bace7",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/ETHUSDT/1m/ETHUSDT-1m-2021-12.zip",
+            "bytes": 2131175,
+            "sha256": "4afcb0943a7a7e474904bc2f40983abc5155c6c88cd0775f5b5b2977cb69a69f",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2025-11.zip",
+            "bytes": 2165376,
+            "sha256": "c54159d1216ab07f040a96d6678748e8746ac4200cba373fb6b758f2cdd1e5e5",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2026-09-30.zip",
+            "bytes": 69578,
+            "sha256": "6f77a95c551530e6f6b469472b9f48759e1fa12382c1ac527111c76ee13a01e1",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2026-04.zip",
+            "bytes": 2088776,
+            "sha256": "318afd4f5acfbcfbb40fbe727a77eee8e9e7b54d8941589c78a32283d90b4a01",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/daily/klines/BTCUSDT/1m/BTCUSDT-1m-2026-09-12.zip",
+            "bytes": 63357,
+            "sha256": "a271cb4c1ddb3c68d3fbbf2dd45ee77e4a718be6f1946dde5577b0bbba430eb2",
+            "identical": true
+          },
+          {
+            "source": "binance",
+            "url": "https://data.binance.vision/data/spot/monthly/klines/BTCUSDT/1m/BTCUSDT-1m-2022-04.zip",
+            "bytes": 2103010,
+            "sha256": "6e840c81076ac25e6acdbfe4aaeb7aa8b1895a70d8111a3c2908c5134072f097",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2014/04/12/ASK_candles_min_1.bi5",
+            "bytes": 11282,
+            "sha256": "6deeab0a47d6aed25f896f587ced305cf909a460fee43ef12c66784013593467",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2016/09/13/ASK_candles_min_1.bi5",
+            "bytes": 9897,
+            "sha256": "573495c34ad51418e6c24ded16bfeaa47ee5e1bdb34e85c22b5ad03d53195ae6",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2020/08/17/BID_candles_min_1.bi5",
+            "bytes": 15790,
+            "sha256": "b8a0cbb07c3baf8baf9864144983ccc18f07d0c9d92f98264403b4ad1c8a173c",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2023/10/28/ASK_candles_min_1.bi5",
+            "bytes": 12014,
+            "sha256": "df1755d135758b98d2065392220f61e416077f107171489d75815b4576497a17",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2026/03/07/BID_candles_min_1.bi5",
+            "bytes": 15187,
+            "sha256": "6d08078cc2357296c3d1a8ebef31114d18ab6fe9eb4fa0b823a242be4918957d",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2022/00/27/BID_candles_min_1.bi5",
+            "bytes": 11796,
+            "sha256": "56931441bd19b50c7938d6dd63928e7f65699a53eed4da089f178e02b93b0765",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2020/04/27/BID_candles_min_1.bi5",
+            "bytes": 12338,
+            "sha256": "05e8bf4f45e53f4ae6eb6450b79a0d7d68baab431ca475eda2dd2e7ce3342ccc",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2015/00/05/ASK_candles_min_1.bi5",
+            "bytes": 13219,
+            "sha256": "a1973b54570903fc9b6abaee4883bbce6d551d7b7c90007aa6e70c2a15f9c2cd",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2014/05/06/ASK_candles_min_1.bi5",
+            "bytes": 10890,
+            "sha256": "a74a4d71e58d4cec1b50d1a2e2710db52d01b1434b25d3529c99cd6bc8f986b3",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2013/09/09/ASK_candles_min_1.bi5",
+            "bytes": 4865,
+            "sha256": "a35342f1afb7def5081b7e121f37533a20c125b0c33e39f7b720e0e50dd2b065",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2024/06/04/BID_candles_min_1.bi5",
+            "bytes": 9973,
+            "sha256": "17b43f62a247fc315a121060b9b5d942fe496568a7efd5d8f23d0eb9b3f7dbfa",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2021/06/29/BID_candles_min_1.bi5",
+            "bytes": 11187,
+            "sha256": "f7e53dbb2cf1e1d3157b2f1690a4857821fef131516610dd48352f05f68cb8f9",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2021/11/27/BID_candles_min_1.bi5",
+            "bytes": 13583,
+            "sha256": "dc40a35b262a266ce2c871283c7dc6474da9198cf4f6717e28c5dcf60a59b6df",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2016/01/14/BID_candles_min_1.bi5",
+            "bytes": 2939,
+            "sha256": "cfdda8d673a0459d728a1e86e6d8880c047b09787ce9ade8a08fa29b1089e4a0",
+            "identical": true
+          },
+          {
+            "source": "dukascopy",
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2017/08/07/BID_candles_min_1.bi5",
+            "bytes": 8103,
+            "sha256": "ff63e8ca5a224b25e1d526b70649538ab55c173b1832ca1f714b021c157e3eee",
+            "identical": true
+          }
+        ],
+        "different": [],
+        "errors": [
+          {
+            "url": "http://datafeed.dukascopy.com/datafeed/EURUSD/2012/06/26/BID_candles_min_1.bi5",
+            "error": "HTTPError: HTTP 503 for https://datafeed.dukascopy.com/datafeed/EURUSD/2012/06/26/BID_candles_min_1.bi5"
+          },
+          {
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2014/03/04/BID_candles_min_1.bi5",
+            "error": "HTTPError: HTTP 503 for https://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2014/03/04/BID_candles_min_1.bi5"
+          },
+          {
+            "url": "http://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2017/10/26/BID_candles_min_1.bi5",
+            "error": "HTTPError: HTTP 503 for https://datafeed.dukascopy.com/datafeed/USA500IDXUSD/2017/10/26/BID_candles_min_1.bi5"
+          }
+        ]
+      },
+      "seconds": 80.4
+    },
+    {
+      "id": "3c",
+      "title": "Raw files unchanged since download",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute the SHA-256 of every raw file and compare it with the hash recorded in data/raw/manifest.parquet when it was downloaded, and check no raw file on disk is missing from that record (a local consistency check: 3a and 3b compare with the sources).",
+      "evidence": {
+        "summary": "19016 of 19016 recorded raw files unchanged since their download, 0 unrecorded raw files on disk",
+        "n_recorded": 19016,
+        "by_source": {
+          "binance": 540,
+          "dukascopy": 18476
+        },
+        "n_unchanged": 19016,
+        "n_changed": 0,
+        "n_missing": 0,
+        "n_files_on_disk": 19016,
+        "n_unrecorded": 0,
+        "changed": [],
+        "missing": [],
+        "unrecorded": []
+      },
+      "seconds": 24.1
+    },
+    {
+      "id": "4a",
+      "title": "BTC returns vs Coinbase BTC-USD",
+      "status": "PASS",
+      "reason": null,
+      "method": "Download Coinbase BTC-USD daily candles (another exchange) and correlate their day-to-day returns with our Binance-based BTC returns; PASS if correlation >= 0.99.",
+      "evidence": {
+        "summary": "corr 0.9966 over 3194 days, mean |diff| 9.1 bp",
+        "ours": "BTC gold r_cc (sealed gold, dev + holdout + live rebuild to 2026-10-01; Binance BTCUSDT, close of the UTC day)",
+        "reference": "Coinbase BTC-USD daily candles (close of the UTC day)",
+        "threshold_corr": 0.99,
+        "n": 3194,
+        "corr": 0.9965502950075154,
+        "mean_abs_diff_bp": 9.120156055933233,
+        "median_abs_diff_bp": 3.0185049905995243,
+        "p99_abs_diff_bp": 110.02552735355802,
+        "max_abs_diff_bp": 573.3042783689513,
+        "max_diff_date": "2018-02-08",
+        "days_over_25bp": 246,
+        "first": "2018-01-03",
+        "last": "2026-10-01",
+        "reference_days": 3196,
+        "reference_requests": 11
+      },
+      "seconds": 12.0
+    },
+    {
+      "id": "4b",
+      "title": "ETH returns vs Coinbase ETH-USD",
+      "status": "PASS",
+      "reason": null,
+      "method": "Same comparison for ETH with Coinbase ETH-USD; PASS if correlation >= 0.99.",
+      "evidence": {
+        "summary": "corr 0.9979 over 3194 days, mean |diff| 10.1 bp",
+        "ours": "ETH gold r_cc (sealed gold, dev + holdout + live rebuild to 2026-10-01; Binance ETHUSDT, close of the UTC day)",
+        "reference": "Coinbase ETH-USD daily candles (close of the UTC day)",
+        "threshold_corr": 0.99,
+        "n": 3194,
+        "corr": 0.9978877304062583,
+        "mean_abs_diff_bp": 10.076664704692263,
+        "median_abs_diff_bp": 3.114482896995341,
+        "p99_abs_diff_bp": 117.67406235315636,
+        "max_abs_diff_bp": 709.7584110537803,
+        "max_diff_date": "2018-01-16",
+        "days_over_25bp": 283,
+        "first": "2018-01-03",
+        "last": "2026-10-01",
+        "reference_days": 3196,
+        "reference_requests": 11
+      },
+      "seconds": 11.8
+    },
+    {
+      "id": "4c",
+      "title": "S&P 500 returns vs FRED SP500",
+      "status": "PASS",
+      "reason": null,
+      "method": "Correlate our S&P 500 (Dukascopy CFD) close-to-close returns with the official S&P 500 closes published by FRED; PASS if correlation >= 0.99.",
+      "evidence": {
+        "summary": "corr 0.9990 over 2500 days, mean |diff| 3.4 bp",
+        "ours": "SPX gold r_cc (sealed gold, dev + holdout + live rebuild to 2026-10-01; Dukascopy USA500 CFD mid at the 16:00 New York close)",
+        "reference": "FRED SP500 official closes (data/raw/implied/fred_SP500_2026-10-02.csv)",
+        "threshold_corr": 0.99,
+        "n": 2500,
+        "corr": 0.9990091782006528,
+        "mean_abs_diff_bp": 3.435625919209543,
+        "median_abs_diff_bp": 2.4651334887604293,
+        "p99_abs_diff_bp": 16.35488414275874,
+        "max_abs_diff_bp": 49.41785277200239,
+        "max_diff_date": "2020-03-20",
+        "days_over_25bp": 11,
+        "first": "2016-10-04",
+        "last": "2026-10-01"
+      },
+      "seconds": 0.7
+    },
+    {
+      "id": "4d",
+      "title": "EUR/USD vs ECB reference rate",
+      "status": "PASS",
+      "reason": null,
+      "method": "Take our EUR/USD price at 14:15 Frankfurt time, when the ECB fixes its reference rate, and correlate its daily returns with the ECB rate (PASS if >= 0.9); our 17:00 New York close is compared too, for information.",
+      "evidence": {
+        "summary": "at the fixing time: corr 0.9992 over 3772 days, mean |diff| 1.1 bp, median level gap 0.38 bp; 17:00 NY close vs fix (timing differs): corr 0.453",
+        "reference": "ECB euro reference rate USD/EUR (14:15 CET), data-api.ecb.europa.eu",
+        "threshold_corr": 0.9,
+        "at_fixing_time": {
+          "ours": "Dukascopy EUR/USD mid at 14:15 Frankfurt (data/bronze/minute)",
+          "n": 3772,
+          "corr": 0.9991906782781466,
+          "mean_abs_diff_bp": 1.1129636115657149,
+          "median_abs_diff_bp": 0.5463552030859908,
+          "p99_abs_diff_bp": 8.195368795511836,
+          "max_abs_diff_bp": 14.544792437317794,
+          "max_diff_date": "2025-04-15",
+          "days_over_25bp": 0,
+          "first": "2012-01-03",
+          "last": "2026-09-30",
+          "n_levels": 3773,
+          "level_mean_abs_diff_bp": 0.7812421169224669,
+          "level_median_abs_diff_bp": 0.3794778385400881
+        },
+        "session_close_vs_fix": {
+          "ours": "EURUSD gold r_cc (sealed gold, dev + holdout + live rebuild to 2026-10-01; 17:00 New York close)",
+          "note": "informational: the two prices are taken ~9 hours apart",
+          "n": 3734,
+          "corr": 0.45330181447719475,
+          "mean_abs_diff_bp": 37.34131946176273,
+          "median_abs_diff_bp": 28.112724289068304,
+          "p99_abs_diff_bp": 159.8668179141019,
+          "max_abs_diff_bp": 288.60281509517125,
+          "max_diff_date": "2015-03-18",
+          "days_over_25bp": 2051,
+          "first": "2012-01-04",
+          "last": "2026-10-01"
+        }
+      },
+      "seconds": 1.5
+    },
+    {
+      "id": "5a",
+      "title": "Live data tables equal sealed gold",
+      "status": "PASS",
+      "reason": null,
+      "method": "Compare the daily tables last built from the raw files by `update` (data/live/; build time and file hashes below) with the sealed gold tables, value by value; this compares files - the rebuild from the raw files is re-done only by --full (5g).",
+      "evidence": {
+        "summary": "live dev 11977 rows and holdout 1240 rows identical to the sealed gold (live files built by update at 2026-10-02T18:31:04.291731+00:00)",
+        "built_utc": "2026-10-02T18:31:04.291731+00:00",
+        "finished_utc": "2026-10-02T18:31:55.055546+00:00",
+        "live_end": "2026-10-01",
+        "live_files": [
+          {
+            "file": "data/live/gold/daily.parquet",
+            "sha256": "41d9cf44a05debf87cbab7ad06bc9a8b8297b20b73cdf023837973d80afafb38",
+            "bytes": 1154440,
+            "sealed_as": "dev_data"
+          },
+          {
+            "file": "data/live/holdout/daily.parquet",
+            "sha256": "c2e10bb760c83f119f525a697055e97ac0ab6b79a852e2d180f9518a59081d8e",
+            "bytes": 125132,
+            "sealed_as": null
+          },
+          {
+            "file": "data/live/implied.parquet",
+            "sha256": "1e59e288b2cbb3abe07f62778e306793c5eb2a9dab4be2fb24583f805f8fd1e0",
+            "bytes": 159880,
+            "sealed_as": null
+          }
+        ],
+        "sealed_files": [
+          {
+            "file": "data/gold/daily.parquet",
+            "sha256": "41d9cf44a05debf87cbab7ad06bc9a8b8297b20b73cdf023837973d80afafb38",
+            "bytes": 1154440,
+            "sealed_as": "dev_data"
+          },
+          {
+            "file": "data/holdout/daily.parquet",
+            "sha256": "8fde77b45c9a76ba86196ef6f184c48040cc7ffb3783af733fc8ffe61d679d12",
+            "bytes": 124774,
+            "sealed_as": "holdout_data"
+          },
+          {
+            "file": "data/gold/implied.parquet",
+            "sha256": "0f5b7baf17e4b77333b5fcb0c8bd47643a05e82dbded1c4bea5a52f805bd809b",
+            "bytes": 160447,
+            "sealed_as": "implied"
+          }
+        ],
+        "note": "compares the files under data/live/ with the sealed ones; a deterministic rebuild of the dev table gives the same bytes as the sealed file, so the files alone cannot show it was rebuilt rather than copied - verify --full (5g) rebuilds the gold tables from the raw files",
+        "result": {
+          "frozen_data_end": "2026-09-30",
+          "holdout_start": "2025-10-01",
+          "assets": [
+            "BTC",
+            "ETH",
+            "EURUSD",
+            "SPX"
+          ],
+          "sealed_base": {
+            "dev_data": {
+              "path": "data/gold/daily.parquet",
+              "sha256": "41d9cf44a05debf87cbab7ad06bc9a8b8297b20b73cdf023837973d80afafb38",
+              "ok": true
+            },
+            "holdout_data": {
+              "path": "data/holdout/daily.parquet",
+              "sha256": "8fde77b45c9a76ba86196ef6f184c48040cc7ffb3783af733fc8ffe61d679d12",
+              "ok": true
+            },
+            "implied": {
+              "path": "data/gold/implied.parquet",
+              "sha256": "0f5b7baf17e4b77333b5fcb0c8bd47643a05e82dbded1c4bea5a52f805bd809b",
+              "ok": true
+            }
+          },
+          "dev": {
+            "rows_sealed": 11977,
+            "rows_live": 11977,
+            "rows_compared": 11977,
+            "cells_compared": 263494,
+            "only_sealed": {
+              "n": 0,
+              "examples": []
+            },
+            "only_live": {
+              "n": 0,
+              "examples": []
+            },
+            "mismatches": {},
+            "problems": [],
+            "sha256_sealed": "ac808183129bb27b6a87a884017b85bc6967f2b2feb6f5c05175b90bf2ce1e61",
+            "sha256_live": "ac808183129bb27b6a87a884017b85bc6967f2b2feb6f5c05175b90bf2ce1e61",
+            "equal": true
+          },
+          "holdout": {
+            "rows_sealed": 1240,
+            "rows_live": 1240,
+            "rows_compared": 1240,
+            "cells_compared": 27280,
+            "only_sealed": {
+              "n": 0,
+              "examples": []
+            },
+            "only_live": {
+              "n": 0,
+              "examples": []
+            },
+            "mismatches": {},
+            "problems": [],
+            "sha256_sealed": "74297094dc8ad8d65df3f64253501cb6a4301a56534972c63caf13fac7fb6781",
+            "sha256_live": "74297094dc8ad8d65df3f64253501cb6a4301a56534972c63caf13fac7fb6781",
+            "equal": true,
+            "sealed_rows_after_frozen_end": 0
+          },
+          "live_after_frozen_end": {
+            "BTC": {
+              "rows": 1,
+              "first": "2026-10-01",
+              "last": "2026-10-01",
+              "scheduled": 1,
+              "missing": []
+            },
+            "ETH": {
+              "rows": 1,
+              "first": "2026-10-01",
+              "last": "2026-10-01",
+              "scheduled": 1,
+              "missing": []
+            },
+            "EURUSD": {
+              "rows": 1,
+              "first": "2026-10-01",
+              "last": "2026-10-01",
+              "scheduled": 1,
+              "missing": []
+            },
+            "SPX": {
+              "rows": 1,
+              "first": "2026-10-01",
+              "last": "2026-10-01",
+              "scheduled": 1,
+              "missing": []
+            }
+          },
+          "live_per_asset": {
+            "BTC": {
+              "dev_rows": 2829,
+              "holdout_rows": 366,
+              "first": "2018-01-02",
+              "last": "2026-10-01"
+            },
+            "ETH": {
+              "dev_rows": 2829,
+              "holdout_rows": 366,
+              "first": "2018-01-02",
+              "last": "2026-10-01"
+            },
+            "EURUSD": {
+              "dev_rows": 3566,
+              "holdout_rows": 260,
+              "first": "2012-01-03",
+              "last": "2026-10-01"
+            },
+            "SPX": {
+              "dev_rows": 2753,
+              "holdout_rows": 252,
+              "first": "2014-10-01",
+              "last": "2026-10-01"
+            }
+          },
+          "implied": {
+            "rows_sealed": 17236,
+            "rows_live": 17236,
+            "rows_compared": 17236,
+            "cells_compared": 86180,
+            "only_sealed": {
+              "n": 0,
+              "examples": []
+            },
+            "only_live": {
+              "n": 0,
+              "examples": []
+            },
+            "mismatches": {},
+            "problems": [],
+            "sha256_sealed": "5d55826081a4e18d964820cd4c1fa56ce4871ac6825ba430c13a3386bf08afa0",
+            "sha256_live": "5d55826081a4e18d964820cd4c1fa56ce4871ac6825ba430c13a3386bf08afa0",
+            "equal": true,
+            "live_rows_after_frozen_end": 3
+          },
+          "ok": true,
+          "problems": []
+        }
+      },
+      "seconds": 2.9
+    },
+    {
+      "id": "5b",
+      "title": "Live forecasts reproduce sealed forecasts",
+      "status": "PASS",
+      "reason": null,
+      "method": "Compare the walk-forward file written by the last live forecast run (data/live/forecasts/) with every forecast stored by the development and holdout runs (relative tolerance 1e-09); this compares files - the walk-forward is re-run only by --full (5f).",
+      "evidence": {
+        "file": {
+          "file": "data/live/forecasts/forecasts.parquet",
+          "sha256": "800f13714b4e632320e74af78c9b74098ca7961c19d88bff07b38e575e0d1a47",
+          "bytes": 3106575,
+          "sealed_as": null
+        },
+        "n_sealed_forecasts_reproduced": 309939,
+        "rtol": 1e-09,
+        "atol": 0.0,
+        "max_abs_diff": 0.0,
+        "max_rel_diff": 0.0,
+        "per_file": {
+          "data/results/holdout/forecasts.parquet": {
+            "rows": 309939,
+            "sha256": "dae45053490ca7e47f4e401f95ea34b3e47b285d6168b62e75fa82ba4686cc3b",
+            "sealed_as": null
+          },
+          "data/results/forecasts.parquet": {
+            "rows": 268522,
+            "sha256": "95a51eeb85e6528b714b6c0970daaa815d0c54d5be950e7d39bc9dd0c27e716a",
+            "sealed_as": "dev_forecasts"
+          }
+        },
+        "new_live_forecasts": 1741,
+        "risk": {
+          "rows": 37218,
+          "max_abs_diff": 0.0,
+          "max_rel_diff": 0.0,
+          "rtol": 1e-09,
+          "atol": 0.0,
+          "passed": true,
+          "files": {
+            "data/results/holdout/risk.parquet": {
+              "rows": 37218,
+              "sha256": "85d51f8a2e62e5dc947318773c912acbf31b7bbadd714e8deebb073fb10790cd",
+              "sealed_as": null
+            }
+          }
+        },
+        "risk_file": {
+          "file": "data/live/forecasts/risk.parquet",
+          "sha256": "c396de5764418f3d923055ee457e6d360afd8cdac744e7859ce6c8833267b40e",
+          "bytes": 1409123,
+          "sealed_as": null
+        },
+        "summary": "309939 stored forecasts equal in the live walk-forward file (rtol 1e-09, atol 0), written 2026-10-02T18:40:36Z"
+      },
+      "seconds": 4.2
+    },
+    {
+      "id": "5c",
+      "title": "Dev evaluation tables recomputed exactly",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute every development evaluation table (leaderboard, Diebold-Mariano, MCS, ...) from the stored development forecasts (sealed) and check it equals the stored table exactly.",
+      "evidence": {
+        "summary": "10 of 10 tables identical; stored dev forecasts are sealed",
+        "folder": "data/results",
+        "files": [
+          {
+            "file": "data/results/forecasts.parquet",
+            "sha256": "95a51eeb85e6528b714b6c0970daaa815d0c54d5be950e7d39bc9dd0c27e716a",
+            "bytes": 2702287,
+            "sealed_as": "dev_forecasts",
+            "pinned_by_ledger_run": null,
+            "unchanged_since_pinned": null
+          },
+          {
+            "file": "data/results/targets.parquet",
+            "sha256": "2d1160df4dc464e70410ce86d07611e498f5c80fe9a255c9b96bc2680ef33e7b",
+            "bytes": 888224,
+            "sealed_as": null,
+            "pinned_by_ledger_run": null,
+            "unchanged_since_pinned": null
+          },
+          {
+            "file": "data/results/risk.parquet",
+            "sha256": "13d40abd2558e6b59d85329608c7b183ddbcae3a9dfc0bfa81929129d1fc20b7",
+            "bytes": 1125476,
+            "sealed_as": "dev_risk",
+            "pinned_by_ledger_run": null,
+            "unchanged_since_pinned": null
+          }
+        ],
+        "note": "internal consistency of the stored dev files (data/results/forecasts.parquet is hashed in SEALED.json)",
+        "tables": [
+          {
+            "table": "losses",
+            "rows": 202638,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "leaderboard",
+            "rows": 132,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "dm_har",
+            "rows": 120,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "mcs",
+            "rows": 132,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_leaderboard",
+            "rows": 52,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_dm",
+            "rows": 48,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_mcs",
+            "rows": 52,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "encompassing",
+            "rows": 44,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "mz",
+            "rows": 52,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "leaderboard_pre2021",
+            "rows": 66,
+            "equal": true,
+            "note": "identical"
+          }
+        ],
+        "combo_qlike_ratio_vs_har": [
+          {
+            "asset": "BTC",
+            "horizon": "1d",
+            "qlike_ratio": 0.909,
+            "n": 1733
+          },
+          {
+            "asset": "BTC",
+            "horizon": "1m",
+            "qlike_ratio": 0.92,
+            "n": 1704
+          },
+          {
+            "asset": "BTC",
+            "horizon": "1w",
+            "qlike_ratio": 0.892,
+            "n": 1727
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1d",
+            "qlike_ratio": 0.85,
+            "n": 1733
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1m",
+            "qlike_ratio": 0.789,
+            "n": 1704
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1w",
+            "qlike_ratio": 0.816,
+            "n": 1727
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1d",
+            "qlike_ratio": 0.949,
+            "n": 1232
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1m",
+            "qlike_ratio": 0.859,
+            "n": 1211
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1w",
+            "qlike_ratio": 0.912,
+            "n": 1228
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1d",
+            "qlike_ratio": 0.826,
+            "n": 1189
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1m",
+            "qlike_ratio": 0.772,
+            "n": 1169
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1w",
+            "qlike_ratio": 0.796,
+            "n": 1185
+          }
+        ]
+      },
+      "seconds": 22.2
+    },
+    {
+      "id": "5d",
+      "title": "Holdout evaluation tables recomputed exactly",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute every holdout evaluation table (including the bootstrap confidence intervals) from the stored holdout forecasts and check it equals the stored table exactly - internal consistency only: those files are not in SEALED.json, so their hashes are compared with the ones the first ledger payload recorded, and only --full (5f) re-derives them.",
+      "evidence": {
+        "summary": "10 of 10 tables identical; result files unchanged since ledger run 20261002T183156Z pinned them",
+        "folder": "data/results/holdout",
+        "files": [
+          {
+            "file": "data/results/holdout/forecasts.parquet",
+            "sha256": "dae45053490ca7e47f4e401f95ea34b3e47b285d6168b62e75fa82ba4686cc3b",
+            "bytes": 3038726,
+            "sealed_as": null,
+            "pinned_by_ledger_run": "20261002T183156Z",
+            "unchanged_since_pinned": true
+          },
+          {
+            "file": "data/results/holdout/targets.parquet",
+            "sha256": "138afa47ec223ee82e08f8443bc9c58de8e7d0e28a89a743b0252da1f2c52abb",
+            "bytes": 952944,
+            "sealed_as": null,
+            "pinned_by_ledger_run": null,
+            "unchanged_since_pinned": null
+          },
+          {
+            "file": "data/results/holdout/risk.parquet",
+            "sha256": "85d51f8a2e62e5dc947318773c912acbf31b7bbadd714e8deebb073fb10790cd",
+            "bytes": 1423750,
+            "sealed_as": null,
+            "pinned_by_ledger_run": "20261002T183156Z",
+            "unchanged_since_pinned": true
+          }
+        ],
+        "note": "internal consistency of the stored holdout files; they were written at the opening, after the seal, so SEALED.json does not hash them - the first ledger payload pins their SHA-256 and verify --full (5f) re-derives them from the sealed data",
+        "tables": [
+          {
+            "table": "losses",
+            "rows": 41417,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "leaderboard",
+            "rows": 132,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "dm_har",
+            "rows": 120,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "mcs",
+            "rows": 88,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_leaderboard",
+            "rows": 39,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_dm",
+            "rows": 36,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "iv_mcs",
+            "rows": 0,
+            "equal": true,
+            "note": "empty table, never written"
+          },
+          {
+            "table": "encompassing",
+            "rows": 33,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "mz",
+            "rows": 50,
+            "equal": true,
+            "note": "identical"
+          },
+          {
+            "table": "ratio_ci",
+            "rows": 120,
+            "equal": true,
+            "note": "identical"
+          }
+        ],
+        "combo_qlike_ratio_vs_har": [
+          {
+            "asset": "BTC",
+            "horizon": "1d",
+            "qlike_ratio": 0.828,
+            "n": 365
+          },
+          {
+            "asset": "BTC",
+            "horizon": "1m",
+            "qlike_ratio": 1.092,
+            "n": 336
+          },
+          {
+            "asset": "BTC",
+            "horizon": "1w",
+            "qlike_ratio": 0.916,
+            "n": 359
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1d",
+            "qlike_ratio": 0.937,
+            "n": 365
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1m",
+            "qlike_ratio": 0.997,
+            "n": 336
+          },
+          {
+            "asset": "ETH",
+            "horizon": "1w",
+            "qlike_ratio": 0.961,
+            "n": 359
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1d",
+            "qlike_ratio": 0.959,
+            "n": 259
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1m",
+            "qlike_ratio": 0.958,
+            "n": 238
+          },
+          {
+            "asset": "EURUSD",
+            "horizon": "1w",
+            "qlike_ratio": 0.899,
+            "n": 255
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1d",
+            "qlike_ratio": 0.847,
+            "n": 251
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1m",
+            "qlike_ratio": 0.779,
+            "n": 231
+          },
+          {
+            "asset": "SPX",
+            "horizon": "1w",
+            "qlike_ratio": 0.852,
+            "n": 247
+          }
+        ]
+      },
+      "seconds": 28.0
+    },
+    {
+      "id": "5e",
+      "title": "Full dev walk-forward reproduced",
+      "status": "SKIPPED",
+      "reason": "only with --full",
+      "method": "Re-run the complete development walk-forward of all models from scratch, without holdout data, and compare every forecast with data/results/forecasts.parquet (only with --full; about 7 minutes).",
+      "evidence": {},
+      "seconds": 0.0
+    },
+    {
+      "id": "5f",
+      "title": "Full holdout run reproduced",
+      "status": "SKIPPED",
+      "reason": "only with --full",
+      "method": "Re-do the one-time holdout run in memory from the sealed data with the frozen code and compare every forecast, target, VaR/ES value and evaluation table with data/results/holdout/, row by row in both directions (only with --full; about 10 minutes).",
+      "evidence": {},
+      "seconds": 0.0
+    },
+    {
+      "id": "5g",
+      "title": "Gold tables rebuilt from raw files",
+      "status": "SKIPPED",
+      "reason": "only with --full",
+      "method": "Rebuild the daily gold and implied-volatility tables from data/raw with the frozen builders in a temporary folder and compare them with the sealed tables (only with --full).",
+      "evidence": {},
+      "seconds": 0.0
+    },
+    {
+      "id": "6a",
+      "title": "Leakage test: every frozen model and COMBO clean",
+      "status": "PASS",
+      "reason": null,
+      "method": "Randomly change all data after a cut-off (2023-06-30, and the last refit date before it of every model that is re-estimated periodically) and re-run all ten frozen forecast models and COMBO: a model that does not look into the future gives the same forecasts at every date up to the cut-off.",
+      "evidence": {
+        "summary": "62 of 62 model x cell x cut-off runs clean, 11 models (72695 forecasts at origins <= t0 compared)",
+        "models": [
+          "MLP",
+          "COMBO",
+          "LGBM",
+          "GJR",
+          "GARCH",
+          "RW",
+          "EWMA",
+          "HAR",
+          "HAR-CJ",
+          "SHAR",
+          "HARQ"
+        ],
+        "fixed_t0": "2023-06-30",
+        "t0_rule": "the fixed cut-off and, for GARCH/GJR/LightGBM/MLP (and COMBO through GJR and LightGBM), the last refit origin at or before it",
+        "perturbation": "every float after t0 x exp(U(-1.5, 1.5))",
+        "runs": [
+          {
+            "model": "MLP",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-05-14",
+            "n_before": 901,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 869,
+            "n_changed_after": 869,
+            "leak": false,
+            "t0_from": "last MLP refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "MLP",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-05-14",
+            "n_before": 901,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 869,
+            "n_changed_after": 869,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-14",
+            "n_before": 932,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 838,
+            "n_changed_after": 838,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-05-14",
+            "n_before": 901,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 840,
+            "n_changed_after": 840,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-14",
+            "n_before": 932,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 809,
+            "n_changed_after": 809,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-08",
+            "n_before": 1135,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 577,
+            "n_changed_after": 577,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-09",
+            "n_before": 1136,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 576,
+            "n_changed_after": 576,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-08",
+            "n_before": 1135,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 557,
+            "n_changed_after": 557,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-09",
+            "n_before": 1136,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 556,
+            "n_changed_after": 556,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "COMBO",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "LGBM",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-05-14",
+            "n_before": 901,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 869,
+            "n_changed_after": 867,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "LGBM",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 821,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "LGBM",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-05-14",
+            "n_before": 901,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 840,
+            "n_changed_after": 838,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "LGBM",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "LGBM",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-08",
+            "n_before": 1135,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 577,
+            "n_changed_after": 577,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "LGBM",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "LGBM",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-08",
+            "n_before": 1135,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 557,
+            "n_changed_after": 557,
+            "leak": false,
+            "t0_from": "last LGBM refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "LGBM",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GJR",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-14",
+            "n_before": 991,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 838,
+            "n_changed_after": 838,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GJR",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1007,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GJR",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-14",
+            "n_before": 991,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 809,
+            "n_changed_after": 809,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GJR",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1007,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GJR",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-09",
+            "n_before": 1177,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 576,
+            "n_changed_after": 576,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GJR",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1191,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GJR",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-09",
+            "n_before": 1177,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 556,
+            "n_changed_after": 556,
+            "leak": false,
+            "t0_from": "last GJR refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GJR",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1191,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GARCH",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-14",
+            "n_before": 991,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 838,
+            "n_changed_after": 838,
+            "leak": false,
+            "t0_from": "last GARCH refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GARCH",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1007,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GARCH",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-14",
+            "n_before": 991,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 809,
+            "n_changed_after": 809,
+            "leak": false,
+            "t0_from": "last GARCH refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GARCH",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1007,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GARCH",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-09",
+            "n_before": 1177,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 576,
+            "n_changed_after": 576,
+            "leak": false,
+            "t0_from": "last GARCH refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GARCH",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1191,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "GARCH",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-09",
+            "n_before": 1177,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 556,
+            "n_changed_after": 556,
+            "leak": false,
+            "t0_from": "last GARCH refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true
+          },
+          {
+            "model": "GARCH",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1191,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "RW",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2006,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "RW",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1977,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "RW",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2190,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "RW",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 2169,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "EWMA",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1756,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "EWMA",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1756,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "EWMA",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1940,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "EWMA",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1940,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 977,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1169,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR-CJ",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 977,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR-CJ",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR-CJ",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1169,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HAR-CJ",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "SHAR",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 977,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "SHAR",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "SHAR",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1169,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "SHAR",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HARQ",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 977,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HARQ",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 948,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HARQ",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1169,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          },
+          {
+            "model": "HARQ",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1150,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false
+          }
+        ]
+      },
+      "seconds": 181.2
+    },
+    {
+      "id": "6b",
+      "title": "Leakage test catches cheating models",
+      "status": "PASS",
+      "reason": null,
+      "method": "Run the same test on three deliberately cheating models (one copies the realised answer, one peeks at the next day's variance, one trains on a label whose window has not ended): the test must catch all three.",
+      "evidence": {
+        "summary": "12 of 12 cheating runs flagged (training-label leak: 4 of 4 at its refit origin, 0 of 4 at the fixed cut-off alone)",
+        "fixed_t0": "2023-06-30",
+        "runs": [
+          {
+            "model": "ORACLE",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2006,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.9997607247477439,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "ORACLE",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 2006,
+            "n_changed_before": 30,
+            "max_rel_change_before": 0.3812965318610863,
+            "first_changed_origin": "2023-06-01",
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "ORACLE",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2190,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.6169793051056239,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "ORACLE",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 2190,
+            "n_changed_before": 19,
+            "max_rel_change_before": 0.3915103428133606,
+            "first_changed_origin": "2023-06-05",
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "PEEK",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2006,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.9997607247477439,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "PEEK",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 2006,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.9997607247477439,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "PEEK",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 2190,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.6169793051056239,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "PEEK",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 2190,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.6169793051056238,
+            "first_changed_origin": "2023-06-30",
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": true,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": true
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-25",
+            "n_before": 1441,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.0058965926998930645,
+            "first_changed_origin": "2023-06-25",
+            "n_after": 827,
+            "n_changed_after": 827,
+            "leak": true,
+            "t0_from": "last LABEL-LEAK refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true,
+            "must_flag": true
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "BTC",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1446,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 822,
+            "n_changed_after": 822,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": false
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-25",
+            "n_before": 1441,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.0001627463130441639,
+            "first_changed_origin": "2023-06-25",
+            "n_after": 798,
+            "n_changed_after": 798,
+            "leak": true,
+            "t0_from": "last LABEL-LEAK refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true,
+            "must_flag": true
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "BTC",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1446,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 793,
+            "n_changed_after": 793,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": false
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-16",
+            "n_before": 1621,
+            "n_changed_before": 1,
+            "max_rel_change_before": 0.0016436429101162604,
+            "first_changed_origin": "2023-06-16",
+            "n_after": 571,
+            "n_changed_after": 571,
+            "leak": true,
+            "t0_from": "last LABEL-LEAK refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true,
+            "must_flag": true
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "SPX",
+            "horizon": "1d",
+            "t0": "2023-06-30",
+            "n_before": 1630,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 562,
+            "n_changed_after": 562,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": false
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-16",
+            "n_before": 1621,
+            "n_changed_before": 1,
+            "max_rel_change_before": 2.7423899477849586e-05,
+            "first_changed_origin": "2023-06-16",
+            "n_after": 551,
+            "n_changed_after": 551,
+            "leak": true,
+            "t0_from": "last LABEL-LEAK refit origin <= 2023-06-30",
+            "t0_is_refit_origin": true,
+            "must_flag": true
+          },
+          {
+            "model": "LABEL-LEAK",
+            "asset": "SPX",
+            "horizon": "1m",
+            "t0": "2023-06-30",
+            "n_before": 1630,
+            "n_changed_before": 0,
+            "max_rel_change_before": 0.0,
+            "first_changed_origin": null,
+            "n_after": 542,
+            "n_changed_after": 542,
+            "leak": false,
+            "t0_from": "fixed cut-off",
+            "t0_is_refit_origin": false,
+            "must_flag": false
+          }
+        ],
+        "note": "the training-label cheat refits every 90 rows and trains on one row whose target window has not ended; it is visible only when the cut-off falls within one target window after a refit origin, which is why 6a also cuts at every refitted model's refit origin"
+      },
+      "seconds": 6.2
+    },
+    {
+      "id": "6c",
+      "title": "Pure-noise model ranks last, outside 90% MCS",
+      "status": "PASS",
+      "reason": null,
+      "method": "Add a model that outputs random noise to the BTC 1-day development comparison: it must have the worst loss and be excluded from the 90% Model Confidence Set.",
+      "evidence": {
+        "asset": "BTC",
+        "horizon": "1d",
+        "start": "2024-10-01",
+        "end": "2025-09-29",
+        "T": 364,
+        "n_models": 12,
+        "noise_rank": 12,
+        "noise_last": true,
+        "noise_mcs_pvalue": 0.0,
+        "noise_in_90_mcs": false,
+        "ranking": [
+          {
+            "rank": 1,
+            "model": "LGBM",
+            "mean_qlike": 0.18326942559337323,
+            "ratio_vs_HAR": 0.6331010435088928,
+            "mcs_pvalue": 1.0,
+            "in_90_mcs": true
+          },
+          {
+            "rank": 2,
+            "model": "MLP",
+            "mean_qlike": 0.18971724117138733,
+            "ratio_vs_HAR": 0.655374910290419,
+            "mcs_pvalue": 0.5946,
+            "in_90_mcs": true
+          },
+          {
+            "rank": 3,
+            "model": "COMBO",
+            "mean_qlike": 0.2677807093944113,
+            "ratio_vs_HAR": 0.9250438036800581,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 4,
+            "model": "HARQ",
+            "mean_qlike": 0.2856887690679407,
+            "ratio_vs_HAR": 0.986906884386636,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 5,
+            "model": "HAR",
+            "mean_qlike": 0.28947895043360317,
+            "ratio_vs_HAR": 1.0,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 6,
+            "model": "SHAR",
+            "mean_qlike": 0.2905957735283836,
+            "ratio_vs_HAR": 1.003858045958463,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 7,
+            "model": "HAR-CJ",
+            "mean_qlike": 0.29821563915256954,
+            "ratio_vs_HAR": 1.0301807392415923,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 8,
+            "model": "EWMA",
+            "mean_qlike": 0.3307048091226359,
+            "ratio_vs_HAR": 1.1424140118902655,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 9,
+            "model": "GJR",
+            "mean_qlike": 0.38496836839186627,
+            "ratio_vs_HAR": 1.3298665336986746,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 10,
+            "model": "GARCH",
+            "mean_qlike": 0.3940174565427138,
+            "ratio_vs_HAR": 1.3611264513448216,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 11,
+            "model": "RW",
+            "mean_qlike": 0.4116104626683431,
+            "ratio_vs_HAR": 1.4219011850492143,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          },
+          {
+            "rank": 12,
+            "model": "NOISE",
+            "mean_qlike": 1.0413434748982524,
+            "ratio_vs_HAR": 3.5973029242314527,
+            "mcs_pvalue": 0.0,
+            "in_90_mcs": false
+          }
+        ],
+        "summary": "noise ranks 12 of 12 on BTC 1d (364 dev origins), MCS p = 0.0000"
+      },
+      "seconds": 0.8
+    },
+    {
+      "id": "7",
+      "title": "No tuning after seeing results",
+      "status": "PASS",
+      "reason": null,
+      "method": "Compare the model settings sealed in config/frozen.yaml (and config/config.yaml, which the code reads) with the values written in docs/SPEC.md, and show the better LightGBM setting found later was not adopted.",
+      "evidence": {
+        "summary": "23 of 23 hyperparameters equal in SPEC.md, frozen.yaml and config.yaml",
+        "spec": "docs/SPEC.md",
+        "parameters": [
+          {
+            "parameter": "lgbm.objective",
+            "SPEC.md": "gamma",
+            "frozen.yaml": "gamma",
+            "config.yaml": "gamma",
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.n_estimators",
+            "SPEC.md": 300,
+            "frozen.yaml": 300,
+            "config.yaml": 300,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.learning_rate",
+            "SPEC.md": 0.03,
+            "frozen.yaml": 0.03,
+            "config.yaml": 0.03,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.num_leaves",
+            "SPEC.md": 15,
+            "frozen.yaml": 15,
+            "config.yaml": 15,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.min_child_samples",
+            "SPEC.md": 50,
+            "frozen.yaml": 50,
+            "config.yaml": 50,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.colsample_bytree",
+            "SPEC.md": 0.8,
+            "frozen.yaml": 0.8,
+            "config.yaml": 0.8,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.reg_lambda",
+            "SPEC.md": 1.0,
+            "frozen.yaml": 1.0,
+            "config.yaml": 1.0,
+            "equal": true
+          },
+          {
+            "parameter": "lgbm.n_jobs",
+            "SPEC.md": 4,
+            "frozen.yaml": 4,
+            "config.yaml": 4,
+            "equal": true
+          },
+          {
+            "parameter": "mlp.hidden",
+            "SPEC.md": [
+              32,
+              32
+            ],
+            "frozen.yaml": [
+              32,
+              32
+            ],
+            "config.yaml": [
+              32,
+              32
+            ],
+            "equal": true
+          },
+          {
+            "parameter": "mlp.epochs",
+            "SPEC.md": 400,
+            "frozen.yaml": 400,
+            "config.yaml": 400,
+            "equal": true
+          },
+          {
+            "parameter": "mlp.lr",
+            "SPEC.md": 0.001,
+            "frozen.yaml": 0.001,
+            "config.yaml": 0.001,
+            "equal": true
+          },
+          {
+            "parameter": "mlp.weight_decay",
+            "SPEC.md": 0.0001,
+            "frozen.yaml": 0.0001,
+            "config.yaml": 0.0001,
+            "equal": true
+          },
+          {
+            "parameter": "mlp.n_seeds",
+            "SPEC.md": 5,
+            "frozen.yaml": 5,
+            "config.yaml": 5,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.window",
+            "SPEC.md": 1000,
+            "frozen.yaml": 1000,
+            "config.yaml": 1000,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.garch.crypto",
+            "SPEC.md": 30,
+            "frozen.yaml": 30,
+            "config.yaml": 30,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.garch.fx",
+            "SPEC.md": 21,
+            "frozen.yaml": 21,
+            "config.yaml": 21,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.garch.xnys",
+            "SPEC.md": 21,
+            "frozen.yaml": 21,
+            "config.yaml": 21,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.ml.crypto",
+            "SPEC.md": 90,
+            "frozen.yaml": 90,
+            "config.yaml": 90,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.ml.fx",
+            "SPEC.md": 63,
+            "frozen.yaml": 63,
+            "config.yaml": 63,
+            "equal": true
+          },
+          {
+            "parameter": "walk_forward.refit.ml.xnys",
+            "SPEC.md": 63,
+            "frozen.yaml": 63,
+            "config.yaml": 63,
+            "equal": true
+          },
+          {
+            "parameter": "har_lags.crypto",
+            "SPEC.md": [
+              1,
+              7,
+              30
+            ],
+            "frozen.yaml": [
+              1,
+              7,
+              30
+            ],
+            "config.yaml": [
+              1,
+              7,
+              30
+            ],
+            "equal": true
+          },
+          {
+            "parameter": "har_lags.fx",
+            "SPEC.md": [
+              1,
+              5,
+              22
+            ],
+            "frozen.yaml": [
+              1,
+              5,
+              22
+            ],
+            "config.yaml": [
+              1,
+              5,
+              22
+            ],
+            "equal": true
+          },
+          {
+            "parameter": "har_lags.xnys",
+            "SPEC.md": [
+              1,
+              5,
+              22
+            ],
+            "frozen.yaml": [
+              1,
+              5,
+              22
+            ],
+            "config.yaml": [
+              1,
+              5,
+              22
+            ],
+            "equal": true
+          }
+        ],
+        "sensitivity": {
+          "file": "reports/tables/sensitivity_lgbm_dev.csv",
+          "cells_where_7_leaves_better": 12,
+          "cells": 12,
+          "mean_qlike_ratio_15_leaves": 0.9135186526190554,
+          "mean_qlike_ratio_7_leaves": 0.8782788221272847,
+          "frozen_num_leaves": 15,
+          "written_utc": "2026-10-02T15:32:36Z",
+          "note": "the 7-leaf setting was better on dev but the sealed config keeps the pre-registered 15"
+        },
+        "deviations": {
+          "file": "docs/DEVIATIONS.md",
+          "sections": [
+            "Before any results",
+            "After the module reviews (no results seen yet)",
+            "After seeing crypto dev results (before any EURUSD/SPX result and before the holdout)",
+            "Pre-freeze audit (all dev results seen, holdout still sealed)",
+            "After the holdout opening (2026-10-02 15:20 UTC) — nothing sealed was changed"
+          ],
+          "n_entries": 28,
+          "n_automatic_reopen_or_refreeze_entries": 0
+        }
+      },
+      "seconds": 0.1
+    },
+    {
+      "id": "8a",
+      "title": "Forward-test ledger hash chain intact",
+      "status": "PASS",
+      "reason": null,
+      "method": "Recompute the hash chain of forecasts/ledger.jsonl (each entry holds the hash of its forecast file and of the previous entry) and check no forecast file, proof or score exists outside it; an edited, inserted or reordered entry breaks it, but runs dropped from the end with all their files show only against a head hash published elsewhere (the owner's push of forecasts/), and UTC days without a run are listed.",
+      "evidence": {
+        "independent": {
+          "ok": true,
+          "n_entries": 1,
+          "n_payloads_ok": 1,
+          "n_entry_files_ok": 1,
+          "head_sha256": "1a819a10fd602148c35d025f47b4bb831f320a41a48ebffb18c4db17f1f9cc8c",
+          "first_run": "20261002T183156Z",
+          "last_run": "20261002T183156Z",
+          "run_ids": [
+            "20261002T183156Z"
+          ],
+          "days_without_run": [],
+          "orphans": [],
+          "first_broken": null,
+          "problems": []
+        },
+        "ledger_module": {
+          "ok": true,
+          "n": 1,
+          "first_bad": null,
+          "reason": null,
+          "head": "1a819a10fd602148c35d025f47b4bb831f320a41a48ebffb18c4db17f1f9cc8c",
+          "orphans": [],
+          "days_without_run": []
+        },
+        "scored_runs_not_in_ledger": {},
+        "days_without_run": [],
+        "head_sha256": "1a819a10fd602148c35d025f47b4bb831f320a41a48ebffb18c4db17f1f9cc8c",
+        "note": "runs dropped from the end of the chain together with all their files leave no trace here: compare head_sha256 with a copy published elsewhere (e.g. the last pushed forecasts/ledger.jsonl); a dropped run in the middle of the chain, with the later entries rewritten, is caught by 8c",
+        "summary": "1 entries (20261002T183156Z .. 20261002T183156Z), 1 payloads and 1 entry files match, head 1a819a10fd602148; UTC days without a run: none"
+      },
+      "seconds": 0.1
+    },
+    {
+      "id": "8b",
+      "title": "Forecast payloads timestamped (OpenTimestamps)",
+      "status": "FAIL",
+      "reason": "20261002T183156Z.json: Bitcoin block time 2026-10-02T19:37:33Z + 2 h is not before the first outcome 2026-10-02T20:00:00Z",
+      "method": "Check every forecast file has an OpenTimestamps proof of its exact bytes and that confirmed proofs sit in a Bitcoin block mined (allowing 2 hours of block-time error) before the first target session closed, and show how much of each target window had passed by then (the .ots files can also be checked at opentimestamps.org).",
+      "evidence": {
+        "summary": "1 payloads, 1 with a proof, 1 Bitcoin-verified, 0 waiting for Bitcoin; at the proven time the next sessions were up to 100% elapsed",
+        "n_payloads": 1,
+        "n_bitcoin_verified": 1,
+        "n_pending": 0,
+        "block_time_slack_hours": 2.0,
+        "max_elapsed_next_session": 1.0,
+        "payloads": [
+          {
+            "payload": "20261002T183156Z.json",
+            "ots": true,
+            "run_utc": "2026-10-02T18:31:56Z",
+            "digest_ok": true,
+            "n_calendars": 3,
+            "bitcoin_heights": [
+              969627,
+              969632
+            ],
+            "first_outcome_utc": "2026-10-02T20:00:00Z",
+            "bitcoin": "verified",
+            "attested_utc": "2026-10-02T19:37:33Z",
+            "proven_by_utc": "2026-10-02T21:37:33Z",
+            "windows": [
+              {
+                "asset": "BTC",
+                "horizon": "1d",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-03T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.9011
+              },
+              {
+                "asset": "BTC",
+                "horizon": "1w",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-08",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-09T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.1287
+              },
+              {
+                "asset": "BTC",
+                "horizon": "1m",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-31",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-11-01T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.03
+              },
+              {
+                "asset": "ETH",
+                "horizon": "1d",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-03T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.9011
+              },
+              {
+                "asset": "ETH",
+                "horizon": "1w",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-08",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-09T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.1287
+              },
+              {
+                "asset": "ETH",
+                "horizon": "1m",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-31",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-11-01T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.03
+              },
+              {
+                "asset": "EURUSD",
+                "horizon": "1d",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-01T21:00:00Z",
+                "first_close_utc": "2026-10-02T21:00:00Z",
+                "close_utc": "2026-10-02T21:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 1.0
+              },
+              {
+                "asset": "EURUSD",
+                "horizon": "1w",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-08",
+                "open_utc": "2026-10-01T21:00:00Z",
+                "first_close_utc": "2026-10-02T21:00:00Z",
+                "close_utc": "2026-10-08T21:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 0.1466
+              },
+              {
+                "asset": "EURUSD",
+                "horizon": "1m",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-30",
+                "open_utc": "2026-10-01T21:00:00Z",
+                "first_close_utc": "2026-10-02T21:00:00Z",
+                "close_utc": "2026-10-30T21:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 0.0354
+              },
+              {
+                "asset": "SPX",
+                "horizon": "1d",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T13:30:00Z",
+                "first_close_utc": "2026-10-02T20:00:00Z",
+                "close_utc": "2026-10-02T20:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 1.0
+              },
+              {
+                "asset": "SPX",
+                "horizon": "1w",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-08",
+                "open_utc": "2026-10-02T13:30:00Z",
+                "first_close_utc": "2026-10-02T20:00:00Z",
+                "close_utc": "2026-10-08T20:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 0.054
+              },
+              {
+                "asset": "SPX",
+                "horizon": "1m",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-30",
+                "open_utc": "2026-10-02T13:30:00Z",
+                "first_close_utc": "2026-10-02T20:00:00Z",
+                "close_utc": "2026-10-30T20:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 0.012
+              },
+              {
+                "asset": "BTC",
+                "horizon": "VaR/ES",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-03T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.9011
+              },
+              {
+                "asset": "ETH",
+                "horizon": "VaR/ES",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T00:00:00Z",
+                "first_close_utc": "2026-10-03T00:00:00Z",
+                "close_utc": "2026-10-03T00:00:00Z",
+                "before_open": false,
+                "before_first_close": true,
+                "elapsed_at_proof": 0.9011
+              },
+              {
+                "asset": "EURUSD",
+                "horizon": "VaR/ES",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-01T21:00:00Z",
+                "first_close_utc": "2026-10-02T21:00:00Z",
+                "close_utc": "2026-10-02T21:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 1.0
+              },
+              {
+                "asset": "SPX",
+                "horizon": "VaR/ES",
+                "window_first": "2026-10-02",
+                "window_last": "2026-10-02",
+                "open_utc": "2026-10-02T13:30:00Z",
+                "first_close_utc": "2026-10-02T20:00:00Z",
+                "close_utc": "2026-10-02T20:00:00Z",
+                "before_open": false,
+                "before_first_close": false,
+                "elapsed_at_proof": 1.0
+              }
+            ],
+            "before_first_outcome": false,
+            "hours_before_first_outcome": -1.63
+          }
+        ],
+        "problems": [
+          "20261002T183156Z.json: Bitcoin block time 2026-10-02T19:37:33Z + 2 h is not before the first outcome 2026-10-02T20:00:00Z"
+        ],
+        "not_checked": [],
+        "older_than_lag_without_bitcoin": [],
+        "note": "a forecast of a 24-hour market is recorded during its target session (the previous day's data are complete only when the next session has begun); its value depends on data up to its origin only, which 8d re-derives",
+        "ots_status_all": {
+          "upgraded": 1
+        }
+      },
+      "seconds": 8.6
+    },
+    {
+      "id": "8c",
+      "title": "Ledger entries pinned in Bitcoin",
+      "status": "PASS",
+      "reason": null,
+      "method": "Verify each ledger entry's own timestamp proof against the Bitcoin block chain: an entry pinned long after its run means the chain may have been rewritten from there on (for example to drop a run).",
+      "evidence": {
+        "summary": "1 entries: 1 anchored",
+        "counts": {
+          "anchored": 1
+        },
+        "max_lag_hours": 24.0,
+        "chain_ok": true,
+        "entries": [
+          {
+            "seq": 0,
+            "run_id": "20261002T183156Z",
+            "run_utc": "2026-10-02T18:31:56+00:00",
+            "proof": "verified",
+            "attested_utc": "2026-10-02T19:37:33Z",
+            "pinned_utc": "2026-10-02T19:37:33Z",
+            "pinned_by": "20261002T183156Z",
+            "lag_hours": 1.09,
+            "status": "anchored",
+            "reason": null
+          }
+        ],
+        "note": "runs dropped from the end of the ledger together with all their files are not detectable here; only a head hash published elsewhere (e.g. a Git push of forecasts/) proves they existed"
+      },
+      "seconds": 8.4
+    },
+    {
+      "id": "8d",
+      "title": "Recorded forecasts re-derived",
+      "status": "PASS",
+      "reason": null,
+      "method": "Look up every forecast and VaR/ES value recorded in the ledger in the frozen walk-forward at the same origin (the last live forecast run's file; re-run in memory with --full) and check its target window against the session calendar, so a recorded number cannot have been changed or chosen later.",
+      "evidence": {
+        "summary": "138 of 138 recorded forecasts and 24 VaR/ES rows re-derived exactly from 1 payloads (0 not comparable: realised sessions differ from the ex-ante schedule); windows = session calendar; recorded input data unchanged for 4 of 4 payload x asset",
+        "reference": "data/live/forecasts/forecasts.parquet, written by the last forecast run (its own reproduction of the stored results: 5b)",
+        "files": [
+          {
+            "file": "data/live/forecasts/forecasts.parquet",
+            "sha256": "800f13714b4e632320e74af78c9b74098ca7961c19d88bff07b38e575e0d1a47",
+            "bytes": 3106575,
+            "sealed_as": null
+          },
+          {
+            "file": "data/live/forecasts/risk.parquet",
+            "sha256": "c396de5764418f3d923055ee457e6d360afd8cdac744e7859ce6c8833267b40e",
+            "bytes": 1409123,
+            "sealed_as": null
+          }
+        ],
+        "counts": {
+          "equal": 138,
+          "different": 0,
+          "missing": 0,
+          "n_t_realised_differs": 0,
+          "inputs_revised": 0,
+          "window_mismatch": 0,
+          "risk_equal": 24,
+          "risk_different": 0,
+          "risk_missing": 0,
+          "risk_inputs_revised": 0
+        },
+        "rtol": 1e-09,
+        "atol": 0.0,
+        "inputs_changed_since_run": [],
+        "rows": [],
+        "problems": []
+      },
+      "seconds": 1.7
+    }
+  ]
+}

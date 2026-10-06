@@ -1,0 +1,34 @@
+mode,hypothesis,unit,asset,horizon,required,verdict,evidence,note
+holdout,H1,BTC,BTC,,True,supported,GARCH ratio 1.187 (DM p <0.001); GJR ratio 1.107 (DM p 0.010),
+holdout,H1,ETH,ETH,,True,supported,GARCH ratio 1.595 (DM p <0.001); GJR ratio 1.382 (DM p <0.001),
+holdout,H1,EURUSD,EURUSD,,True,not supported,GARCH ratio 1.071 (DM p 0.307); GJR ratio 1.108 (DM p 0.220),
+holdout,H1,SPX,SPX,,True,not supported,GARCH ratio 1.170 (DM p 0.020); GJR ratio 0.958 (DM p 0.485),
+holdout,H1,overall,,,True,not supported,"at 1d, GARCH and GJR both have QLIKE ratio vs HAR > 1 with DM-HLN p < 0.05; all four assets",
+holdout,H2,BTC 1d,BTC,1d,True,not supported,HAR family in MCS: none (2 members); LGBM 0.578 (p <0.001); MLP 0.688 (p 0.001),
+holdout,H2,BTC 1w,BTC,1w,True,supported,"HAR family in MCS: HAR, HARQ, HAR-CJ, SHAR (10 members); LGBM 0.982 (p 0.877); MLP 1.182 (p 0.426)",
+holdout,H2,BTC 1m,BTC,1m,False,n/a,—,no MCS at this horizon in this mode (SPEC §8)
+holdout,H2,ETH 1d,ETH,1d,True,not supported,HAR family in MCS: none (2 members); LGBM 0.707 (p <0.001); MLP 0.712 (p <0.001),
+holdout,H2,ETH 1w,ETH,1w,True,supported,"HAR family in MCS: HAR, HARQ, HAR-CJ, SHAR (9 members); LGBM 0.861 (p 0.080); MLP 0.874 (p 0.257)",
+holdout,H2,ETH 1m,ETH,1m,False,n/a,—,no MCS at this horizon in this mode (SPEC §8)
+holdout,H2,EURUSD 1d,EURUSD,1d,True,supported,"HAR family in MCS: HARQ, HAR-CJ (8 members); LGBM 1.097 (p 0.218); MLP 0.976 (p 0.646)",
+holdout,H2,EURUSD 1w,EURUSD,1w,True,supported,"HAR family in MCS: HARQ, HAR-CJ (9 members); LGBM 0.966 (p 0.705); MLP 0.860 (p <0.001)",
+holdout,H2,EURUSD 1m,EURUSD,1m,False,n/a,—,no MCS at this horizon in this mode (SPEC §8)
+holdout,H2,SPX 1d,SPX,1d,True,supported,"HAR family in MCS: HARQ, SHAR (5 members); LGBM 1.041 (p 0.747); MLP 0.970 (p 0.759)",
+holdout,H2,SPX 1w,SPX,1w,True,supported,"HAR family in MCS: HAR, HARQ, HAR-CJ, SHAR (8 members); LGBM 1.033 (p 0.837); MLP 0.884 (p 0.373)",
+holdout,H2,SPX 1m,SPX,1m,False,n/a,—,no MCS at this horizon in this mode (SPEC §8)
+holdout,H2,overall,,,True,not supported,"every asset × horizon cell: the 90% MCS contains HAR, HARQ, HAR-CJ or SHAR; the 8 cells at 1d and 1w (no 1m MCS in the holdout)","evaluated on horizons 1d, 1w only; holdout MCS at 1d and 1w only (SPEC §8)"
+holdout,H3,BTC,BTC,,True,not supported,COMBO c +0.101 (p 0.811); HAR c −1.976 (p 0.058),
+holdout,H3,ETH,ETH,,True,not supported,COMBO c −0.580 (p 0.505); HAR c −0.819 (p 0.305),
+holdout,H3,EURUSD,EURUSD,,False,n/a,—,no implied-vol benchmark / encompassing result
+holdout,H3,SPX,SPX,,True,not supported,COMBO c +0.015 (p 0.951); HAR c −0.474 (p 0.423),
+holdout,H3,overall,,,True,not supported,"at 1m, encompassing coefficient c of COMBO > 0 with p < 0.05; SPX, BTC and ETH",
+holdout,H4,BTC,BTC,,True,not supported,FZ0 diff −0.193 (DM p 0.097); green share 100.0% vs HS-250 100.0%,green shares tie (not higher)
+holdout,H4,ETH,ETH,,True,not supported,FZ0 diff −0.075 (DM p 0.360); green share 100.0% vs HS-250 100.0%,green shares tie (not higher)
+holdout,H4,EURUSD,EURUSD,,True,not supported,FZ0 diff −0.029 (DM p 0.693); green share 100.0% vs HS-250 100.0%,green shares tie (not higher)
+holdout,H4,SPX,SPX,,True,not supported,FZ0 diff +0.128 (DM p 0.423); green share 100.0% vs HS-250 100.0%,green shares tie (not higher)
+holdout,H4,overall,,,True,not supported,COMBO+FHS fz0_diff vs HS-250 < 0 and rolling-250 green share > HS-250's; all four assets,
+holdout,H5,BTC,BTC,,True,not supported,"J/RV 5.6%, jump days 21.4%, RS⁻/RV 49.6%, 1d QLIKE gain vs HAR: HAR-CJ +1.3%, SHAR −0.9%","3/5 larger than EURUSD (not larger: gain_HAR-CJ, gain_SHAR)"
+holdout,H5,ETH,ETH,,True,not supported,"J/RV 7.8%, jump days 28.8%, RS⁻/RV 49.5%, 1d QLIKE gain vs HAR: HAR-CJ +1.2%, SHAR +0.5%",4/5 larger than EURUSD (not larger: gain_HAR-CJ)
+holdout,H5,EURUSD,EURUSD,,False,n/a,"J/RV 3.7%, jump days 12.7%, RS⁻/RV 49.4%, 1d QLIKE gain vs HAR: HAR-CJ +7.7%, SHAR −0.1%",reference asset
+holdout,H5,SPX,SPX,,False,n/a,"J/RV 1.2%, jump days 3.6%, RS⁻/RV 49.1%, 1d QLIKE gain vs HAR: HAR-CJ −3.6%, SHAR +8.5%",not part of the H5 comparison
+holdout,H5,overall,,,True,not supported,"J/RV, jump-day share, RS⁻/RV and 1d QLIKE gains of HAR-CJ and SHAR vs HAR larger for BTC and ETH than for EURUSD",descriptive; jump measures over the holdout window
